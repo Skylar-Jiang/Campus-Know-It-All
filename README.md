@@ -42,7 +42,7 @@
 ## 项目结构
 
 ~~~text
-aaSQL-project/
+project/
 ├─ app.py                       # Flask 启动入口（默认端口 5001）
 ├─ config.py                    # 配置（支持环境变量覆盖）
 ├─ requirements.txt             # Python 依赖

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>物资借还管理</h2>
+    <p>创建借用单、添加借用明细、执行整单归还。</p>
+  </div>
+
+  <div class="hint-box" style="margin-bottom: 12px;">
+    <h3>归还入口说明</h3>
+    <p>只有状态为 borrowed 或 overdue 的借用单，才会显示“整单归还”按钮。</p>
+    <p class="hint-line">若看不到归还按钮，请先给该借用单添加借用明细并完成借出。</p>
+  </div>
+
+  <div class="sub-grid">
+    <form method="post" action="{{ url_for('borrow_create') }}" class="sub-card">
+      <h3>创建借用单</h3>
+      <select name="activity_id" required>
+        <option value="">选择活动</option>
+        {% for a in activities %}
+        <option value="{{ a.activity_id }}">#{{ a.activity_id }} {{ a.title }}</option>
+        {% endfor %}
+      </select>
+      <select name="order_status">
+        {% for s in order_status %}
+        <option value="{{ s }}" {% if s == 'approved' %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+      <input type="datetime-local" name="expected_return_time" required>
+      <button type="submit">创建借用单</button>
+    </form>
+
+    <form method="post" action="{{ url_for('borrow_detail_add') }}" class="sub-card">
+      <h3>添加借用明细</h3>
+      <input type="number" name="order_id" min="1" required placeholder="借用单 ID">
+      <select name="resource_id" required>
+        <option value="">选择物资</option>
+        {% for r in resources %}
+        <option value="{{ r.resource_id }}">#{{ r.resource_id }} {{ r.item_name }}（库存 {{ r.available_qty }}）</option>
+        {% endfor %}
+      </select>
+      <input type="number" name="borrow_qty" min="1" required placeholder="借用数量">
+      <button type="submit">添加并扣减库存</button>
+    </form>
+  </div>
+
+  <div class="panel-sep"></div>
+
+  <h3>借用单列表</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>借用单ID</th>
+          <th>活动ID</th>
+          <th>申请人</th>
+          <th>申请时间</th>
+          <th>应归还</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in orders %}
+        <tr>
+          <td>{{ o.order_id }}</td>
+          <td>{{ o.activity_id }}</td>
+          <td>{{ o.applicant_user_id }}</td>
+          <td>{{ o.apply_time }}</td>
+          <td>{{ o.expected_return_time }}</td>
+          <td><span class="badge">{{ o.order_status }}</span></td>
+          <td>
+            {% if o.order_status in ['borrowed', 'overdue'] %}
+            <form method="post" action="{{ url_for('borrow_return', order_id=o.order_id) }}">
+              <button class="btn-ghost" type="submit">整单归还</button>
+            </form>
+            {% else %}
+            <span class="minor">当前状态无需归还</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">暂无借用单</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel-sep"></div>
+
+  <h3>物资库存</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>名称</th>
+          <th>类别</th>
+          <th>总量</th>
+          <th>可借</th>
+          <th>单位</th>
+          <th>状态</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in resources %}
+        <tr>
+          <td>{{ r.resource_id }}</td>
+          <td>{{ r.item_name }}</td>
+          <td>{{ r.category }}</td>
+          <td>{{ r.total_qty }}</td>
+          <td>{{ r.available_qty }}</td>
+          <td>{{ r.unit }}</td>
+          <td><span class="badge">{{ r.status }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">暂无物资数据</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

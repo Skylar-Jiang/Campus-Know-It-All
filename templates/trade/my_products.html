@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>我的商品</h2>
+    <p>查看你发布的二手商品状态。</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>标题</th><th>分类</th><th>价格</th><th>状态</th><th>发布时间</th></tr></thead>
+      <tbody>
+      {% for p in products %}
+      <tr>
+        <td>{{ p.product_id }}</td>
+        <td>{{ p.title }}</td>
+        <td>{{ p.category_name }}</td>
+        <td>{{ p.price }}</td>
+        <td><span class="badge">{{ p.status }}</span></td>
+        <td>{{ p.publish_time }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">暂无发布记录</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title if title else "校园活动管理" }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="bg-shape bg-shape-a"></div>
+  <div class="bg-shape bg-shape-b"></div>
+  <div class="grid-glow"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-chip">Campus DB</span>
+      <h1>校园活动报名与物资调配</h1>
+    </div>
+    {% if current_user %}
+    <nav class="top-nav">
+      <a href="{{ url_for('home_dashboard') }}">首页</a>
+      <a href="{{ url_for('activities') }}">活动列表</a>
+      {% if current_user.role in ['admin', 'club'] %}
+      <a href="{{ url_for('activity_manage') }}">活动管理</a>
+      <a href="{{ url_for('borrow_manage') }}">物资借还</a>
+      {% endif %}
+      <a href="{{ url_for('trade_products') }}">二手</a>
+      <a href="{{ url_for('community_posts') }}">社区</a>
+      <a href="{{ url_for('my_center') }}">我的</a>
+      <a href="{{ url_for('statistics') }}">统计视图</a>
+    </nav>
+    <div class="user-pane">
+      <div class="user-meta">
+        <strong>{{ current_user.username }}</strong>
+        <span>{{ current_user.role }}</span>
+      </div>
+      <form method="post" action="{{ url_for('logout') }}">
+        <button class="btn-neutral" type="submit">退出</button>
+      </form>
+    </div>
+    {% endif %}
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="messages">
+          {% for category, msg in messages %}
+            {% if category != 'error' %}
+            <div class="msg {{ category }}">{{ msg }}</div>
+            {% endif %}
+          {% endfor %}
+        </section>
+
+        {% set error_messages = [] %}
+        {% for category, msg in messages %}
+          {% if category == 'error' %}
+            {% set _ = error_messages.append(msg) %}
+          {% endif %}
+        {% endfor %}
+
+        {% if error_messages|length > 0 %}
+        <div id="errorModal" class="modal-backdrop show" role="dialog" aria-modal="true">
+          <div class="modal-card">
+            <h3>操作失败</h3>
+            <p>系统未完成当前请求，请根据原因调整后重试。</p>
+            <ul>
+              {% for em in error_messages %}
+              <li>{{ em }}</li>
+              {% endfor %}
+            </ul>
+            <button id="closeErrorModal" type="button">我知道了</button>
+          </div>
+        </div>
+        {% endif %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    const closeBtn = document.getElementById('closeErrorModal');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        const modal = document.getElementById('errorModal');
+        if (modal) modal.classList.remove('show');
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel detail">
+  <div class="panel-head">
+    <h2>{{ activity.title }}</h2>
+    <p>{{ activity.description if activity.description else '暂无描述' }}</p>
+  </div>
+
+  <div class="grid-two">
+    <div class="kv">
+      <div><span>社团</span><strong>{{ activity.club_name }}</strong></div>
+      <div><span>场地</span><strong>{{ activity.venue_name }}</strong></div>
+      <div><span>状态</span><strong>{{ activity.status }}</strong></div>
+      <div><span>时间</span><strong>{{ activity.start_time }} - {{ activity.end_time }}</strong></div>
+      <div><span>截止</span><strong>{{ activity.signup_deadline }}</strong></div>
+    </div>
+    <div class="stat-card">
+      <h3>报名进度</h3>
+      <p class="big">{{ activity.confirmed_count }} / {{ activity.max_capacity }}</p>
+      <p>候补人数：{{ activity.waiting_count }}</p>
+    </div>
+  </div>
+
+  {% if current_user.role == 'student' %}
+  <form class="register-row" method="post" action="{{ url_for('register_activity', activity_id=activity.activity_id) }}">
+    <button type="submit">以当前账号报名</button>
+    <a class="btn-link" href="{{ url_for('activities') }}">返回列表</a>
+  </form>
+  {% else %}
+  <a class="btn-link" href="{{ url_for('activities') }}">返回列表</a>
+  {% endif %}
+
+  {% if can_manage %}
+  <div class="panel-sep"></div>
+  <h3>更新活动信息</h3>
+  <form method="post" action="{{ url_for('activity_update', activity_id=activity.activity_id) }}" class="form-grid">
+    <input name="title" value="{{ activity.title }}" required>
+    <input name="category" value="{{ activity.category }}" placeholder="类别">
+    <input type="number" name="venue_id" min="1" value="{{ activity.venue_id }}" required>
+    <input type="datetime-local" name="start_time" value="{{ activity.start_time.strftime('%Y-%m-%dT%H:%M') if activity.start_time else '' }}" required>
+    <input type="datetime-local" name="end_time" value="{{ activity.end_time.strftime('%Y-%m-%dT%H:%M') if activity.end_time else '' }}" required>
+    <input type="datetime-local" name="signup_deadline" value="{{ activity.signup_deadline.strftime('%Y-%m-%dT%H:%M') if activity.signup_deadline else '' }}" required>
+    <input type="number" name="max_capacity" min="1" value="{{ activity.max_capacity }}" required>
+    <textarea name="description" rows="3" placeholder="活动描述">{{ activity.description }}</textarea>
+    <button type="submit">保存活动修改</button>
+  </form>
+
+  <div class="panel-sep"></div>
+  <h3>报名与签到管理</h3>
+  <div class="hint-box" style="margin-bottom: 10px;">
+    <p>签到入口就在这里：confirmed 用户可签到，未到场可标记为缺席。</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+      <tr>
+        <th>reg_id</th>
+        <th>学生</th>
+        <th>报名状态</th>
+        <th>候补序号</th>
+        <th>签到状态</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for r in regs %}
+      <tr>
+        <td>{{ r.reg_id }}</td>
+        <td>{{ r.student_id }} - {{ r.real_name }}</td>
+        <td>{{ r.reg_status }}</td>
+        <td>{{ r.queue_no if r.queue_no else '-' }}</td>
+        <td>{{ r.checkin_status }}</td>
+        <td class="actions">
+          <form method="post" action="{{ url_for('checkin', reg_id=r.reg_id) }}">
+            <button class="btn-ghost" type="submit">签到</button>
+          </form>
+          <form method="post" action="{{ url_for('absent', reg_id=r.reg_id) }}">
+            <button class="btn-danger" type="submit">缺席</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">暂无报名记录</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

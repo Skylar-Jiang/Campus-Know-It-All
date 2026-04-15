@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>发布帖子</h2>
+    <p>分享校园生活、经验和求助信息。</p>
+  </div>
+
+  <form method="post" class="form-grid">
+    <input type="text" name="title" required placeholder="帖子标题">
+    <select name="category_id" required>
+      <option value="">选择分类</option>
+      {% for c in categories %}
+      <option value="{{ c.category_id }}">{{ c.category_name }}</option>
+      {% endfor %}
+    </select>
+    <textarea name="content" rows="6" placeholder="帖子内容" required></textarea>
+    <button type="submit">发布帖子</button>
+  </form>
+</section>
+{% endblock %}

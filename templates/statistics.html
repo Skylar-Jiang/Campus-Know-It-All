@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>活动统计视图</h2>
+    <p>数据来源：v_activity_summary 与 v_hot_activity_top10</p>
+  </div>
+
+  <div class="top-cards">
+    {% for t in top_rows %}
+    <div class="metric">
+      <span>Top {{ loop.index }}</span>
+      <strong>{{ t.activity_title }}</strong>
+      <div class="minor">报名 {{ t.confirmed_count }} · 签到率 {{ t.checkin_rate_pct }}%</div>
+    </div>
+    {% else %}
+    <div class="metric">
+      <span>Top</span>
+      <strong>暂无数据</strong>
+      <div class="minor">请先补充活动报名数据</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>活动名称</th>
+        <th>社团</th>
+        <th>场地</th>
+        <th>状态</th>
+        <th>确认报名</th>
+        <th>候补人数</th>
+        <th>签到人数</th>
+        <th>借用总量</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for r in rows %}
+      <tr>
+        <td>{{ r.activity_id }}</td>
+        <td>{{ r.activity_title }}</td>
+        <td>{{ r.club_name }}</td>
+        <td>{{ r.venue_name }}</td>
+        <td>{{ r.status }}</td>
+        <td>{{ r.confirmed_count }}</td>
+        <td>{{ r.waiting_count }}</td>
+        <td>{{ r.checked_count }}</td>
+        <td>{{ r.borrow_total_qty }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="9">暂无统计数据</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

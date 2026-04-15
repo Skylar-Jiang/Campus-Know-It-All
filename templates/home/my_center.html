@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>我的中心</h2>
+    <p>按角色展示你的关键工作台，避免只能看单一模块。</p>
+  </div>
+
+  <div class="top-cards">
+    {% if user.role == 'club' %}
+    <div class="metric"><span>活动数（最近）</span><strong>{{ data.summary.activity_count }}</strong></div>
+    <div class="metric"><span>报名总量（最近）</span><strong>{{ data.summary.reg_count }}</strong></div>
+    <div class="metric"><span>已签到人数（最近）</span><strong>{{ data.summary.checked_count }}</strong></div>
+    <div class="metric"><span>快捷入口</span><strong><a class="text-link" href="{{ url_for('activity_manage') }}">活动管理</a></strong></div>
+    {% elif user.role == 'student' %}
+    <div class="metric"><span>我的报名（最近）</span><strong>{{ data.summary.reg_count }}</strong></div>
+    <div class="metric"><span>签到完成数</span><strong>{{ data.summary.checked_count }}</strong></div>
+    <div class="metric"><span>交易记录（最近）</span><strong>{{ data.summary.trade_count }}</strong></div>
+    <div class="metric"><span>我的帖子（最近）</span><strong>{{ data.summary.post_count }}</strong></div>
+    {% else %}
+    <div class="metric"><span>系统管理入口</span><strong><a class="text-link" href="{{ url_for('statistics') }}">统计视图</a></strong></div>
+    {% endif %}
+  </div>
+
+  {% if user.role == 'club' %}
+  <div class="sub-grid sub-grid-top">
+    <div class="sub-card">
+      <h3>我负责的活动（含报名发送情况）</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr><th>活动</th><th>状态</th><th>报名</th><th>签到</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+          {% for a in data.club_activities %}
+          <tr>
+            <td>#{{ a.activity_id }} {{ a.title }}</td>
+            <td><span class="badge">{{ a.status }}</span></td>
+            <td>{{ a.reg_count }} / {{ a.max_capacity }}<div class="minor">候补 {{ a.waiting_count }}</div></td>
+            <td>{{ a.checked_count }}<div class="minor">缺席 {{ a.absent_count }}</div></td>
+            <td><a class="btn-link-inline" href="{{ url_for('activity_detail', activity_id=a.activity_id) }}">活动详情</a></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">暂无活动记录</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <h3>最新报名动态</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr><th>报名ID</th><th>活动</th><th>学生</th><th>报名状态</th><th>签到状态</th></tr>
+          </thead>
+          <tbody>
+          {% for r in data.club_recent_regs %}
+          <tr>
+            <td>{{ r.reg_id }}</td>
+            <td>{{ r.title }}</td>
+            <td>{{ r.real_name }}</td>
+            <td>{{ r.reg_status }}</td>
+            <td>{{ r.checkin_status }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">暂无报名动态</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  {% elif user.role == 'student' %}
+  <div class="sub-grid sub-grid-top">
+    <div class="sub-card">
+      <h3>我的活动报名</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr><th>活动</th><th>社团</th><th>报名状态</th><th>签到状态</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+          {% for r in data.student_regs %}
+          <tr>
+            <td>#{{ r.activity_id }} {{ r.title }}</td>
+            <td>{{ r.club_name }}</td>
+            <td>{{ r.reg_status }}</td>
+            <td>{{ r.checkin_status }}</td>
+            <td><a class="btn-link-inline" href="{{ url_for('activity_detail', activity_id=r.activity_id) }}">活动详情</a></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">你还没有报名活动</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <h3>我的交易</h3>
+      <p class="minor">不仅是二手发布，也包含买卖订单。</p>
+      <div class="actions" style="margin: 6px 0 10px;">
+        <a class="btn-link-inline" href="{{ url_for('trade_my_products') }}">我的商品</a>
+        <a class="btn-link-inline" href="{{ url_for('trade_my_orders') }}">我的订单</a>
+        <a class="btn-link-inline" href="{{ url_for('trade_product_create') }}">发布商品</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr><th>订单ID</th><th>商品</th><th>状态</th><th>时间</th></tr>
+          </thead>
+          <tbody>
+          {% for o in data.student_recent_orders %}
+          <tr>
+            <td>{{ o.order_id }}</td>
+            <td>{{ o.title }}</td>
+            <td><span class="badge">{{ o.order_status }}</span></td>
+            <td>{{ o.create_time }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4">暂无交易记录</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-sep"></div>
+  <div class="sub-card">
+    <h3>我的社区动态</h3>
+    <div class="actions" style="margin-bottom: 8px;">
+      <a class="btn-link-inline" href="{{ url_for('community_post_create') }}">发布帖子</a>
+      <a class="btn-link-inline" href="{{ url_for('community_my_posts') }}">我的帖子列表</a>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>帖子ID</th><th>标题</th><th>状态</th><th>时间</th></tr></thead>
+        <tbody>
+        {% for p in data.student_recent_posts %}
+        <tr>
+          <td>{{ p.post_id }}</td>
+          <td><a class="text-link" href="{{ url_for('community_post_detail', post_id=p.post_id) }}">{{ p.title }}</a></td>
+          <td><span class="badge">{{ p.status }}</span></td>
+          <td>{{ p.create_time }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4">暂无帖子</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="sub-card">
+    <h3>管理员快捷入口</h3>
+    <div class="actions">
+      <a class="btn-link-inline" href="{{ url_for('activity_manage') }}">活动管理</a>
+      <a class="btn-link-inline" href="{{ url_for('borrow_manage') }}">物资借还</a>
+      <a class="btn-link-inline" href="{{ url_for('statistics') }}">统计视图</a>
+      <a class="btn-link-inline" href="{{ url_for('community_posts') }}">社区</a>
+      <a class="btn-link-inline" href="{{ url_for('trade_products') }}">二手</a>
+    </div>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

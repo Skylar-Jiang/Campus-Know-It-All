@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>活动管理台</h2>
+    <p>创建活动、调整状态，并从详情页进入签到管理。</p>
+  </div>
+
+  <div class="hint-box" style="margin-bottom: 12px;">
+    <h3>常用入口</h3>
+    <p>1. 新活动先创建为 draft，再在下方“状态快速修改”改为 published。</p>
+    <p>2. 需要签到时，点击活动标题进入详情页，在“报名与签到管理”区操作。</p>
+    <p class="hint-line">时间字段统一使用本地时间：开始时间 &lt; 结束时间，报名截止应早于开始时间。</p>
+  </div>
+
+  <div class="sub-grid sub-grid-top">
+    <form method="post" action="{{ url_for('activity_create') }}" class="sub-card">
+      <h3>创建活动</h3>
+      {% if current_user.role == 'admin' %}
+      <select name="club_id" required>
+        <option value="">选择社团</option>
+        {% for c in clubs %}
+        <option value="{{ c.club_id }}">{{ c.club_name }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+      <input name="title" required placeholder="活动名称">
+      <input name="category" placeholder="类别，例如 culture / hot">
+      <select name="venue_id" required>
+        <option value="">选择场地</option>
+        {% for v in venues %}
+        <option value="{{ v.venue_id }}">{{ v.venue_name }}</option>
+        {% endfor %}
+      </select>
+      <input type="datetime-local" name="start_time" required>
+      <input type="datetime-local" name="end_time" required>
+      <input type="datetime-local" name="signup_deadline" required>
+      <input type="number" name="max_capacity" min="1" required placeholder="人数上限">
+      <textarea name="description" rows="3" placeholder="活动描述"></textarea>
+      <button type="submit">创建为草稿</button>
+    </form>
+
+    <div class="sub-card">
+      <h3>活动状态快速修改</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>活动</th>
+              <th>当前状态</th>
+              <th>新状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in activities %}
+            <tr>
+              <td>{{ a.activity_id }}</td>
+              <td>
+                <a class="text-link" href="{{ url_for('activity_detail', activity_id=a.activity_id) }}">{{ a.title }}</a>
+                <div class="minor">{{ a.club_name }} · {{ a.venue_name }}</div>
+              </td>
+              <td><span class="badge">{{ a.status }}</span></td>
+              <td>
+                <form method="post" action="{{ url_for('activity_change_status', activity_id=a.activity_id) }}" class="inline-form">
+                  <select name="status">
+                    {% for s in activity_status %}
+                    <option value="{{ s }}" {% if s == a.status %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                  </select>
+                  <button class="btn-ghost" type="submit">保存</button>
+                  <a class="btn-link-inline" href="{{ url_for('activity_detail', activity_id=a.activity_id) }}">签到入口</a>
+                </form>
+              </td>
+              <td>
+                <span class="minor">进入详情后可操作签到/缺席</span>
+              </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">暂无可管理活动</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

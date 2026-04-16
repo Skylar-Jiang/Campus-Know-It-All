@@ -42,7 +42,7 @@
 ## 项目结构
 
 ~~~text
-aaSQL-project/
+project/
 ├─ app.py                       # Flask 启动入口（默认端口 5001）
 ├─ config.py                    # 配置（支持环境变量覆盖）
 ├─ requirements.txt             # Python 依赖
@@ -76,32 +76,13 @@ aaSQL-project/
 ### 1) 克隆项目
 
 ~~~bash
-git clone <你的仓库地址>
-cd aaSQL-project
+git clone https://github.com/Skylar-Jiang/Campus-Know-It-All
 ~~~
 
-### 2) 创建并激活虚拟环境
+### 2) 创建并激活环境
 
-Windows PowerShell：
-
-~~~powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-~~~
-
-Windows CMD：
-
-~~~bat
-python -m venv .venv
-.venv\Scripts\activate.bat
-~~~
-
-macOS/Linux：
-
-~~~bash
-python3 -m venv .venv
-source .venv/bin/activate
-~~~
+python3.10+
+MySQL8.0+
 
 ### 3) 安装依赖
 

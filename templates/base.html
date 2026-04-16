@@ -13,6 +13,15 @@
   <div class="bg-shape bg-shape-a"></div>
   <div class="bg-shape bg-shape-b"></div>
   <div class="grid-glow"></div>
+  {% if current_user %}
+  <img
+    id="cornerMascot"
+    class="corner-mascot"
+    src="{{ url_for('static', filename='images/mascot.png') }}"
+    alt="校园百事通吉祥物"
+    onerror="this.style.display='none';"
+  >
+  {% endif %}
 
   <header class="topbar">
     <div class="brand">

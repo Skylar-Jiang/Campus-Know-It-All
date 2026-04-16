@@ -3,7 +3,14 @@
 <section class="panel">
   <div class="panel-head">
     <h2>物资借还管理</h2>
-    <p>创建借用单、添加借用明细、执行整单归还。</p>
+    <p>先创建借用单（系统自动生成 UID），再添加借用明细，最后执行整单归还。</p>
+  </div>
+
+  <div class="hint-box" style="margin-bottom: 12px;">
+    <h3>借用单说明</h3>
+    <p>借用单是一次借物申请的主记录，系统会自动生成唯一编号（如 BOR-20260416-000123）。</p>
+    <p>添加借用明细时，建议使用“借用单 UID”选择，避免手输数字 ID。</p>
+    <p class="hint-line">只有状态为 borrowed 或 overdue 的借用单，才会显示“整单归还”按钮。</p>
   </div>
 
   <div class="hint-box" style="margin-bottom: 12px;">
@@ -32,7 +39,12 @@
 
     <form method="post" action="{{ url_for('borrow_detail_add') }}" class="sub-card">
       <h3>添加借用明细</h3>
-      <input type="number" name="order_id" min="1" required placeholder="借用单 ID">
+      <select name="order_ref" required>
+        <option value="">选择借用单 UID</option>
+        {% for o in detail_target_orders %}
+        <option value="{{ o.order_uid }}">{{ o.order_uid }} · 活动#{{ o.activity_id }} · {{ o.order_status }}</option>
+        {% endfor %}
+      </select>
       <select name="resource_id" required>
         <option value="">选择物资</option>
         {% for r in resources %}
@@ -51,7 +63,7 @@
     <table>
       <thead>
         <tr>
-          <th>借用单ID</th>
+          <th>借用单UID</th>
           <th>活动ID</th>
           <th>申请人</th>
           <th>申请时间</th>
@@ -63,7 +75,10 @@
       <tbody>
         {% for o in orders %}
         <tr>
-          <td>{{ o.order_id }}</td>
+            <td>
+              <div>{{ o.order_uid }}</div>
+              <div class="minor">内部ID: {{ o.order_id }}</div>
+            </td>
           <td>{{ o.activity_id }}</td>
           <td>{{ o.applicant_user_id }}</td>
           <td>{{ o.apply_time }}</td>

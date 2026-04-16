@@ -2,7 +2,7 @@
 
 一个基于 Flask + MySQL 的课程项目，覆盖活动发布、报名签到、物资借还、统计查询，并扩展了二手交易与校园社区模块。
 
-数据库内容核心包含：
+本项目强调“数据库能力可演示”，核心包含：
 - 事务删除
 - 触发器校验
 - 存储过程联动更新
@@ -42,7 +42,7 @@
 ## 项目结构
 
 ~~~text
-project/
+aaSQL-project/
 ├─ app.py                       # Flask 启动入口（默认端口 5001）
 ├─ config.py                    # 配置（支持环境变量覆盖）
 ├─ requirements.txt             # Python 依赖
@@ -76,7 +76,8 @@ project/
 ### 1) 克隆项目
 
 ~~~bash
-git clone https://github.com/Skylar-Jiang/Campus-Know-It-All
+git clone <你的仓库地址>
+cd aaSQL-project
 ~~~
 
 ### 2) 创建并激活虚拟环境
@@ -263,7 +264,12 @@ source sql/09_add_post_like.sql;
 
 ## 安全说明
 
-当前项目用于课程演示，默认账号为明文密码，无法用于生产环境：
+当前项目用于课程演示，默认账号为明文密码，生产环境请务必改造：
+
+1. 使用哈希存储密码（如 bcrypt）。
+2. 不要把真实数据库密码写入仓库。
+3. 设置强随机 SECRET_KEY。
+4. 关闭 debug 模式并增加日志/异常治理。
 
 ## 后续可扩展方向
 
@@ -283,4 +289,6 @@ source sql/09_add_post_like.sql;
 4. 发起 Pull Request
 
 ## 许可证
-仅用于学习与课程展示。
+
+如无特殊声明，默认仅用于学习与课程展示。
+如需开源发布，建议补充标准许可证（MIT/Apache-2.0 等）。

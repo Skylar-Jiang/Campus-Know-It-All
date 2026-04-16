@@ -50,9 +50,53 @@ CREATE TABLE IF NOT EXISTS trade_order (
   CHECK (buyer_user_id <> seller_user_id)
 );
 
-CREATE INDEX idx_product_status_time ON product(status, publish_time);
-CREATE INDEX idx_trade_order_buyer_status ON trade_order(buyer_user_id, order_status);
-CREATE INDEX idx_trade_order_seller_status ON trade_order(seller_user_id, order_status);
+SET @idx_exists := (
+  SELECT COUNT(1)
+  FROM information_schema.statistics
+  WHERE table_schema = DATABASE()
+    AND table_name = 'product'
+    AND index_name = 'idx_product_status_time'
+);
+SET @sql := IF(
+  @idx_exists = 0,
+  'CREATE INDEX idx_product_status_time ON product(status, publish_time)',
+  'SELECT ''idx_product_status_time exists'''
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @idx_exists := (
+  SELECT COUNT(1)
+  FROM information_schema.statistics
+  WHERE table_schema = DATABASE()
+    AND table_name = 'trade_order'
+    AND index_name = 'idx_trade_order_buyer_status'
+);
+SET @sql := IF(
+  @idx_exists = 0,
+  'CREATE INDEX idx_trade_order_buyer_status ON trade_order(buyer_user_id, order_status)',
+  'SELECT ''idx_trade_order_buyer_status exists'''
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @idx_exists := (
+  SELECT COUNT(1)
+  FROM information_schema.statistics
+  WHERE table_schema = DATABASE()
+    AND table_name = 'trade_order'
+    AND index_name = 'idx_trade_order_seller_status'
+);
+SET @sql := IF(
+  @idx_exists = 0,
+  'CREATE INDEX idx_trade_order_seller_status ON trade_order(seller_user_id, order_status)',
+  'SELECT ''idx_trade_order_seller_status exists'''
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 -- =========================
 -- Community module
@@ -93,8 +137,37 @@ CREATE TABLE IF NOT EXISTS post_comment (
     FOREIGN KEY (user_id) REFERENCES user_account(user_id)
 );
 
-CREATE INDEX idx_post_status_time ON post(status, create_time);
-CREATE INDEX idx_comment_post_time ON post_comment(post_id, create_time);
+SET @idx_exists := (
+  SELECT COUNT(1)
+  FROM information_schema.statistics
+  WHERE table_schema = DATABASE()
+    AND table_name = 'post'
+    AND index_name = 'idx_post_status_time'
+);
+SET @sql := IF(
+  @idx_exists = 0,
+  'CREATE INDEX idx_post_status_time ON post(status, create_time)',
+  'SELECT ''idx_post_status_time exists'''
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @idx_exists := (
+  SELECT COUNT(1)
+  FROM information_schema.statistics
+  WHERE table_schema = DATABASE()
+    AND table_name = 'post_comment'
+    AND index_name = 'idx_comment_post_time'
+);
+SET @sql := IF(
+  @idx_exists = 0,
+  'CREATE INDEX idx_comment_post_time ON post_comment(post_id, create_time)',
+  'SELECT ''idx_comment_post_time exists'''
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 -- Seed categories only if empty
 INSERT INTO product_category(category_name)

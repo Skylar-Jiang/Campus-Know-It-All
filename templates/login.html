@@ -16,14 +16,14 @@
     <section class="auth-shell">
       <header class="auth-header">
         <span class="brand-chip">Campus DB</span>
-        <h1>校园活动平台</h1>
-        <p>未注册用户请先注册；已有账号直接登录。</p>
+        <h1>校园活动与物资管理工作台</h1>
+        <p>一个更干净的登录入口。先登录，再按角色进入活动、借还、社区和统计页面。</p>
       </header>
 
       <div class="login-cta">
-        <a href="{{ url_for('activities') }}">登录后看活动列表</a>
+        <a href="#login-card">直接登录</a>
         <span>·</span>
-        <a href="#register-card">先去注册</a>
+        <a href="#register-card">注册账号</a>
       </div>
 
       {% with messages = get_flashed_messages(with_categories=true) %}
@@ -68,8 +68,8 @@
       <div class="auth-grid">
         <div class="auth-col-left">
           <article id="login-card" class="auth-card {% if active_tab == 'register' %}hidden{% endif %}">
-            <h2>欢迎回来</h2>
-            <p>如果你已经有账号，直接登录。</p>
+            <h2>登录</h2>
+            <p>已有账号后直接进入系统。</p>
             <form method="post" action="{{ url_for('login') }}" class="form-stack">
               <label>用户名<input type="text" name="username" required placeholder="例如：admin1"></label>
               <label>密码<input type="password" name="password" required placeholder="请输入密码"></label>
@@ -78,8 +78,8 @@
           </article>
 
           <article id="register-card" class="auth-card {% if active_tab != 'register' %}hidden{% endif %}">
-            <h2>创建新账号</h2>
-            <p>建议课程演示优先注册 student 角色。</p>
+            <h2>注册</h2>
+            <p>课程演示建议优先注册 student 角色。</p>
             <form method="post" action="{{ url_for('register') }}" class="form-stack">
               <label>用户名<input type="text" name="username" required placeholder="唯一用户名"></label>
               <label>密码<input type="password" name="password" required placeholder="至少 6 位"></label>
@@ -102,17 +102,14 @@
         </div>
 
         <aside class="auth-mascot" aria-hidden="true">
-          <div class="pet pet-a"></div>
-          <div class="pet pet-b"></div>
-          <div class="mascot-head"></div>
-          <div class="mascot-face">
-            <span></span><span></span>
-          </div>
-          <div class="mascot-body"></div>
-          <div class="spark s1"></div>
-          <div class="spark s2"></div>
-          <div class="spark s3"></div>
-          <p>Hi, welcome!</p>
+          <img
+            id="loginMascot"
+            class="mascot-image"
+            src="{{ url_for('static', filename='images/mascot.png') }}"
+            alt="校园百事通吉祥物"
+            onerror="this.style.display='none'; document.body.classList.add('mascot-image-missing');"
+          >
+          <p>Quick access</p>
         </aside>
       </div>
 
@@ -121,7 +118,7 @@
         <p>admin1 / 123456</p>
         <p>club_music / 123456</p>
         <p>stu_zhang / 123456</p>
-        <p class="hint-line">登录后会进入活动列表；也可在顶部导航中切换到其他页面。</p>
+        <p class="hint-line">登录后默认进入首页；顶部导航可切换到活动、物资、二手、社区与统计。</p>
       </section>
     </section>
   </main>

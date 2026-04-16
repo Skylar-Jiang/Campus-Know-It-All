@@ -421,7 +421,7 @@ def register_activity_routes(app):
                 with conn.cursor() as cur:
                     cur.execute(
                         """
-                        SELECT ar.reg_id, ar.activity_id, a.club_id
+                        SELECT ar.reg_id, ar.activity_id, a.club_id, ar.reg_status, ar.checkin_status
                         FROM activity_registration ar
                         JOIN activity a ON a.activity_id = ar.activity_id
                         WHERE ar.reg_id = %s
@@ -435,6 +435,9 @@ def register_activity_routes(app):
                     if not can_manage_activity(g.current_user, row):
                         flash("你没有权限操作该签到记录。", "error")
                         return redirect(url_for("activities"))
+                    if row["reg_status"] != "confirmed":
+                        flash("候补用户不可签到/标记缺席，请先转正为 confirmed。", "error")
+                        return redirect(url_for("activity_detail", activity_id=row["activity_id"]))
 
                     cur.execute(
                         "UPDATE activity_registration SET checkin_status=%s WHERE reg_id=%s",

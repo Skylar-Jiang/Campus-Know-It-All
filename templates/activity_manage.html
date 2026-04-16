@@ -13,7 +13,7 @@
     <p class="hint-line">时间字段统一使用本地时间：开始时间 &lt; 结束时间，报名截止应早于开始时间。</p>
   </div>
 
-  <div class="sub-grid sub-grid-top">
+  <div class="sub-grid sub-grid-top manage-grid">
     <form method="post" action="{{ url_for('activity_create') }}" class="sub-card">
       <h3>创建活动</h3>
       {% if current_user.role == 'admin' %}
@@ -32,9 +32,25 @@
         <option value="{{ v.venue_id }}">{{ v.venue_name }}</option>
         {% endfor %}
       </select>
-      <input type="datetime-local" name="start_time" required>
-      <input type="datetime-local" name="end_time" required>
-      <input type="datetime-local" name="signup_deadline" required>
+
+      <div class="field-stack">
+        <label for="start_time">开始时间</label>
+        <input id="start_time" type="datetime-local" name="start_time" required>
+        <p class="field-note">活动正式开始的时间点，用于签到与状态判断。</p>
+      </div>
+
+      <div class="field-stack">
+        <label for="end_time">结束时间</label>
+        <input id="end_time" type="datetime-local" name="end_time" required>
+        <p class="field-note">活动结束时间，用于结算与活动完成判断。</p>
+      </div>
+
+      <div class="field-stack">
+        <label for="signup_deadline">报名截止时间</label>
+        <input id="signup_deadline" type="datetime-local" name="signup_deadline" required>
+        <p class="field-note">学生最晚可报名时间，通常应早于开始时间。</p>
+      </div>
+
       <input type="number" name="max_capacity" min="1" required placeholder="人数上限">
       <textarea name="description" rows="3" placeholder="活动描述"></textarea>
       <button type="submit">创建为草稿</button>

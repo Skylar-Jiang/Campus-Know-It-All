@@ -71,12 +71,16 @@
         <td>{{ r.queue_no if r.queue_no else '-' }}</td>
         <td>{{ r.checkin_status }}</td>
         <td class="actions">
+          {% if r.reg_status == 'confirmed' %}
           <form method="post" action="{{ url_for('checkin', reg_id=r.reg_id) }}">
             <button class="btn-ghost" type="submit">签到</button>
           </form>
           <form method="post" action="{{ url_for('absent', reg_id=r.reg_id) }}">
             <button class="btn-danger" type="submit">缺席</button>
           </form>
+          {% else %}
+          <span class="minor">候补用户不可签到</span>
+          {% endif %}
         </td>
       </tr>
       {% else %}

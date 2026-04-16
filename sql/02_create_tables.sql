@@ -140,6 +140,7 @@ CREATE TABLE resource_item (
 
 CREATE TABLE borrow_order (
   order_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  order_uid VARCHAR(32) NULL UNIQUE,
   activity_id BIGINT NOT NULL,
   applicant_user_id BIGINT NOT NULL,
   apply_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

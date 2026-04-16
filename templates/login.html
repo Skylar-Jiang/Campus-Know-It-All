@@ -16,8 +16,8 @@
     <section class="auth-shell">
       <header class="auth-header">
         <span class="brand-chip">Campus DB</span>
-        <h1>校园活动与物资管理工作台</h1>
-        <p>一个更干净的登录入口。先登录，再按角色进入活动、借还、社区和统计页面。</p>
+        <h1>校园百事通</h1>
+        <p>先注册，再登录。</p>
       </header>
 
       <div class="login-cta">
@@ -107,7 +107,7 @@
             class="mascot-image"
             src="{{ url_for('static', filename='images/mascot.png') }}"
             alt="校园百事通吉祥物"
-            onerror="this.style.display='none'; document.body.classList.add('mascot-image-missing');"
+            onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='{{ url_for('static', filename='images/mascot.svg') }}';}else{this.style.display='none'; document.body.classList.add('mascot-image-missing');}"
           >
           <p>Quick access</p>
         </aside>

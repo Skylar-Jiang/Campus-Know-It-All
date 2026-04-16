@@ -22,7 +22,7 @@
     <table>
       <thead>
       <tr>
-        <th>ID</th><th>商品</th><th>卖家</th><th>分类</th><th>价格</th><th>状态</th><th>发布时间</th>
+        <th>ID</th><th>商品</th><th>卖家</th><th>分类</th><th>价格</th><th>状态</th><th>发布时间</th><th>操作</th>
       </tr>
       </thead>
       <tbody>
@@ -35,9 +35,12 @@
         <td>{{ p.price }}</td>
         <td><span class="badge">{{ p.status }}</span></td>
         <td>{{ p.publish_time }}</td>
+        <td>
+          <a class="btn-link-inline" href="{{ url_for('trade_product_detail', product_id=p.product_id) }}">查看详情</a>
+        </td>
       </tr>
       {% else %}
-      <tr><td colspan="7">暂无商品</td></tr>
+      <tr><td colspan="8">暂无商品</td></tr>
       {% endfor %}
       </tbody>
     </table>

@@ -1074,6 +1074,14 @@ button:hover {
   gap: 18px;
 }
 
+.sub-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sub-grid > * {
+  min-width: 0;
+}
+
 .sub-grid,
 .detail .grid-two,
 .auth-grid {
@@ -1122,8 +1130,10 @@ button:hover {
 .table-wrap {
   border: 1px solid var(--ui-border);
   border-radius: 22px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
   background: #fff;
+  max-width: 100%;
 }
 
 table {
@@ -1396,6 +1406,11 @@ body.mascot-image-missing .auth-mascot p {
 
 .login-page .auth-grid {
   margin-top: 8px;
+  align-items: stretch;
+}
+
+.login-page .auth-col-left .auth-card {
+  min-height: 520px;
 }
 
 .login-page .hint-box {
@@ -1496,5 +1511,9 @@ button,
 
   .auth-mascot p::before {
     font-size: 1rem;
+  }
+
+  .login-page .auth-col-left .auth-card {
+    min-height: auto;
   }
 }

@@ -19,14 +19,14 @@
     class="corner-mascot"
     src="{{ url_for('static', filename='images/mascot.png') }}"
     alt="校园百事通吉祥物"
-    onerror="this.style.display='none';"
+    onerror="if(!this.dataset.fallback){this.dataset.fallback='1'; this.src='{{ url_for('static', filename='images/mascot.svg') }}';}else{this.style.display='none';}"
   >
   {% endif %}
 
   <header class="topbar">
     <div class="brand">
       <span class="brand-chip">Campus DB</span>
-      <h1>校园活动报名与物资调配</h1>
+      <h1>校园百事通</h1>
     </div>
     {% if current_user %}
     <nav class="top-nav">

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>我的订单</h2>
+    <p>查看你作为买家或卖家的交易记录。</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>订单</th><th>商品</th><th>买家</th><th>卖家</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+      <tbody>
+      {% for o in orders %}
+      <tr>
+        <td>#{{ o.order_id }}</td>
+        <td>{{ o.title }}</td>
+        <td>{{ o.buyer_name }}</td>
+        <td>{{ o.seller_name }}</td>
+        <td><span class="badge">{{ o.order_status }}</span></td>
+        <td>{{ o.create_time }}</td>
+        <td>
+          <form class="inline-form" method="post" action="{{ url_for('trade_order_status', order_id=o.order_id) }}">
+            <select name="order_status">
+              {% for s in ['created','cancelled','completed'] %}
+              <option value="{{ s }}" {% if s == o.order_status %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+            <button class="btn-ghost" type="submit">更新</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="7">暂无订单</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

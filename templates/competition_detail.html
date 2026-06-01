@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel detail">
+  <div class="panel-head">
+    <h2>{{ competition.title }}</h2>
+    <p>{{ competition.category }} · {{ competition.organizer }} · {{ competition.club_name }}整理</p>
+  </div>
+
+  <div class="grid-two">
+    <div class="kv">
+      <div><span>分类</span><strong>{{ competition.category }}</strong></div>
+      <div><span>主办方</span><strong>{{ competition.organizer }}</strong></div>
+      <div><span>整理社团</span><strong>{{ competition.club_name }}</strong></div>
+      <div><span>状态</span><strong>{{ competition.status }}</strong></div>
+      <div><span>时间</span><strong>{{ competition.start_time if competition.start_time else '以官方通知为准' }}{% if competition.end_time %} - {{ competition.end_time }}{% endif %}</strong></div>
+    </div>
+    <div class="stat-card">
+      <h3>官方入口</h3>
+      <p>请通过官方页面核对最新赛程、规则与材料要求。</p>
+      <a class="btn-link-inline" href="{{ competition.official_url }}" target="_blank" rel="noopener">打开官方页面</a>
+    </div>
+  </div>
+
+  <div class="sub-card">
+    <h3>官方简介整理</h3>
+    <p class="post-content-box">{{ competition.summary }}</p>
+  </div>
+
+  <div class="register-row" style="margin-top: 14px;">
+    <a class="btn-link" href="{{ url_for('competitions') }}">返回竞赛动态</a>
+  </div>
+
+  {% if can_manage %}
+  <div class="panel-sep"></div>
+  <h3>更新竞赛信息</h3>
+  <form method="post" action="{{ url_for('competition_update', competition_id=competition.competition_id) }}" class="form-grid">
+    <input name="title" value="{{ competition.title }}" required>
+    <select name="category" required>
+      {% for c in competition_categories %}
+      <option value="{{ c }}" {% if competition.category == c %}selected{% endif %}>{{ c }}</option>
+      {% endfor %}
+    </select>
+    <input name="organizer" value="{{ competition.organizer }}" required>
+    <input name="official_url" value="{{ competition.official_url }}" required>
+    <input type="datetime-local" name="start_time" value="{{ competition.start_time.strftime('%Y-%m-%dT%H:%M') if competition.start_time else '' }}">
+    <input type="datetime-local" name="end_time" value="{{ competition.end_time.strftime('%Y-%m-%dT%H:%M') if competition.end_time else '' }}">
+    <textarea name="summary" rows="6" required>{{ competition.summary }}</textarea>
+    <button type="submit">保存竞赛修改</button>
+  </form>
+  {% endif %}
+</section>
+{% endblock %}

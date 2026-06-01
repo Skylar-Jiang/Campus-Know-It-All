@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>我的帖子</h2>
+    <p>查看你发布的帖子及状态。</p>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>标题</th><th>分类</th><th>状态</th><th>发布时间</th></tr></thead>
+      <tbody>
+      {% for p in posts %}
+      <tr>
+        <td>{{ p.post_id }}</td>
+        <td>{{ p.title }}</td>
+        <td>{{ p.category_name }}</td>
+        <td><span class="badge">{{ p.status }}</span></td>
+        <td>{{ p.create_time }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">暂无帖子</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

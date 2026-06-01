@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>竞赛管理台</h2>
+    <p>社团可整理竞赛官方信息，发布后学生可在竞赛动态中查看。</p>
+  </div>
+
+  <div class="sub-grid sub-grid-top manage-grid">
+    <form method="post" action="{{ url_for('competition_create') }}" class="sub-card">
+      <h3>创建竞赛</h3>
+      {% if current_user.role == 'admin' %}
+      <select name="club_id" required>
+        <option value="">选择整理社团</option>
+        {% for c in clubs %}
+        <option value="{{ c.club_id }}">{{ c.club_name }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+      <input name="title" required placeholder="竞赛名称">
+      <select name="category" required>
+        <option value="">选择分类</option>
+        {% for c in categories %}
+        <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+      </select>
+      <input name="organizer" required placeholder="主办方/承办方">
+      <input name="official_url" required placeholder="官方链接">
+      <input type="datetime-local" name="start_time">
+      <input type="datetime-local" name="end_time">
+      <textarea name="summary" rows="7" required placeholder="官方简介整理：可写比赛宗旨、参赛对象、赛程安排、作品/材料要求、奖项设置等"></textarea>
+      <button type="submit">创建为草稿</button>
+    </form>
+
+    <div class="sub-card">
+      <h3>竞赛状态快速修改</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>竞赛</th>
+            <th>分类</th>
+            <th>当前状态</th>
+            <th>新状态</th>
+          </tr>
+          </thead>
+          <tbody>
+          {% for c in competitions %}
+          <tr>
+            <td>{{ c.competition_id }}</td>
+            <td>
+              <a class="text-link" href="{{ url_for('competition_detail', competition_id=c.competition_id) }}">{{ c.title }}</a>
+              <div class="minor">{{ c.club_name }} · {{ c.organizer }}</div>
+            </td>
+            <td>{{ c.category }}</td>
+            <td><span class="badge">{{ c.status }}</span></td>
+            <td>
+              <form method="post" action="{{ url_for('competition_change_status', competition_id=c.competition_id) }}" class="inline-form">
+                <select name="status">
+                  {% for s in status_choices %}
+                  <option value="{{ s }}" {% if s == c.status %}selected{% endif %}>{{ s }}</option>
+                  {% endfor %}
+                </select>
+                <button class="btn-ghost" type="submit">保存</button>
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">暂无可管理竞赛</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

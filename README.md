@@ -63,9 +63,7 @@ aaSQL-project/
   ├─ 07_event.sql
   ├─ 08_add_trade_community.sql
   ├─ 09_add_post_like.sql
-  ├─ 10_add_borrow_order_uid.sql
-  ├─ 99_bootstrap_all.sql
-  └─ 99_bootstrap_workbench.sql
+  └─ 10_add_borrow_order_uid.sql
 ```
 
 ## 快速开始

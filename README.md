@@ -2,12 +2,6 @@
 
 一个基于 Flask + MySQL 的校园综合管理系统，包含活动报名、签到、物资借还、二手交易、社区互动和统计查询。
 
-项目同时强调数据库课程能力展示：
-- 事务
-- 触发器
-- 存储过程
-- 视图
-
 ## 目录
 
 - [项目亮点](#项目亮点)
@@ -132,10 +126,7 @@ python app.py
 7. `sql/07_event.sql`
 8. `sql/08_add_trade_community.sql`
 9. `sql/09_add_post_like.sql`
-
-备注：
-- `sql/10_add_borrow_order_uid.sql` 仅用于老库增量升级。
-- 全量重建后通常不需要执行 10。
+10. `sql/10_add_borrow_order_uid.sql` 
 
 ## 默认演示账号
 

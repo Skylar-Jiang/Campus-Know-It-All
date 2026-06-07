@@ -160,6 +160,7 @@ def register_activity_routes(app):
 
         return render_template("activity_detail.html", activity=item, regs=reg_rows, can_manage=allowed_to_manage)
 
+    #触发器下的插入
     @app.route("/activity/register/<int:activity_id>", methods=["POST"])
     @role_required("student")
     def register_activity(activity_id):
@@ -183,6 +184,7 @@ def register_activity_routes(app):
 
         return redirect(url_for("activity_detail", activity_id=activity_id))
 
+    #存储过程
     @app.route("/activity/finish/<int:activity_id>", methods=["POST"])
     @role_required("admin", "club")
     def finish_activity(activity_id):
@@ -209,6 +211,7 @@ def register_activity_routes(app):
 
         return redirect(url_for("activities"))
 
+    #事务删除
     @app.route("/activity/delete/<int:activity_id>", methods=["POST"])
     @role_required("admin", "club")
     def delete_activity(activity_id):

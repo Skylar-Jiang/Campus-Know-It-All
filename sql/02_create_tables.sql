@@ -225,7 +225,6 @@ CREATE TABLE audit_log (
     FOREIGN KEY (operator_id) REFERENCES user_account(user_id)
 );
 
--- Recommended indexes for high-frequency queries
 CREATE INDEX idx_activity_status_start
   ON activity(status, start_time);
 

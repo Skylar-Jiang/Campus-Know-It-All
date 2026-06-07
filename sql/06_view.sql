@@ -55,25 +55,3 @@ SELECT
 FROM v_activity_summary t
 ORDER BY t.confirmed_count DESC, checkin_rate_pct DESC
 LIMIT 10;
-
-CREATE VIEW v_club_resource_utilization AS
-SELECT
-  c.club_id,
-  c.club_name,
-  COALESCE(SUM(bd.borrow_qty), 0) AS total_borrow_qty,
-  COALESCE(SUM(bd.damage_qty), 0) AS total_damage_qty,
-  ROUND(
-    CASE WHEN COALESCE(SUM(bd.borrow_qty), 0) = 0 THEN 0
-         ELSE COALESCE(SUM(bd.damage_qty), 0) / SUM(bd.borrow_qty) * 100
-    END,
-    2
-  ) AS damage_rate_pct,
-  ROUND(
-    AVG(CASE WHEN bo.order_status = 'overdue' THEN 1 ELSE 0 END) * 100,
-    2
-  ) AS overdue_rate_pct
-FROM club c
-LEFT JOIN activity a ON a.club_id = c.club_id
-LEFT JOIN borrow_order bo ON bo.activity_id = a.activity_id
-LEFT JOIN borrow_detail bd ON bd.order_id = bo.order_id
-GROUP BY c.club_id, c.club_name;
